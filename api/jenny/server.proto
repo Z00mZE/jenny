@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package databus;
+
+option go_package = "github.com/Z00mZE/jenny/pb/jenny";
+
+import "google/protobuf/empty.proto";
+
+service Service{
+  rpc Publish(google.protobuf.Empty) returns(google.protobuf.Empty);
+}

@@ -1,0 +1,18 @@
+all: true
+dir: '{{.InterfaceDir}}/mocks'
+filename: "{{.InterfaceName|snakecase}}_mock.go"
+force-file-write: true
+formatter: goimports
+log-level: info
+structname: '{{.InterfaceName}}'
+pkgname: 'mocks'
+recursive: true
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+template-data:
+  unroll-variadic: True
+packages:
+  github.com/Z00mZE/jenny:
+    config:
+      all: true
