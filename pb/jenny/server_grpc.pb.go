@@ -8,6 +8,7 @@ package jenny
 
 import (
 	context "context"
+	types "github.com/Z00mZE/jenny/pb/jenny/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,14 +21,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Service_Publish_FullMethodName = "/databus.Service/Publish"
+	Service_Send_FullMethodName   = "/jenny.Service/Send"
+	Service_Stream_FullMethodName = "/jenny.Service/Stream"
 )
 
 // ServiceClient is the client API for Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
-	Publish(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Send(ctx context.Context, in *types.Event, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Stream(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[types.Event, emptypb.Empty], error)
 }
 
 type serviceClient struct {
@@ -38,21 +41,35 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
-func (c *serviceClient) Publish(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *serviceClient) Send(ctx context.Context, in *types.Event, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Service_Publish_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Service_Send_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
+func (c *serviceClient) Stream(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[types.Event, emptypb.Empty], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &Service_ServiceDesc.Streams[0], Service_Stream_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[types.Event, emptypb.Empty]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Service_StreamClient = grpc.ClientStreamingClient[types.Event, emptypb.Empty]
+
 // ServiceServer is the server API for Service service.
 // All implementations should embed UnimplementedServiceServer
 // for forward compatibility.
 type ServiceServer interface {
-	Publish(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	Send(context.Context, *types.Event) (*emptypb.Empty, error)
+	Stream(grpc.ClientStreamingServer[types.Event, emptypb.Empty]) error
 }
 
 // UnimplementedServiceServer should be embedded to have
@@ -62,8 +79,11 @@ type ServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedServiceServer struct{}
 
-func (UnimplementedServiceServer) Publish(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
+func (UnimplementedServiceServer) Send(context.Context, *types.Event) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
+}
+func (UnimplementedServiceServer) Stream(grpc.ClientStreamingServer[types.Event, emptypb.Empty]) error {
+	return status.Errorf(codes.Unimplemented, "method Stream not implemented")
 }
 func (UnimplementedServiceServer) testEmbeddedByValue() {}
 
@@ -85,36 +105,49 @@ func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
 }
 
-func _Service_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+func _Service_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(types.Event)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).Publish(ctx, in)
+		return srv.(ServiceServer).Send(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Service_Publish_FullMethodName,
+		FullMethod: Service_Send_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).Publish(ctx, req.(*emptypb.Empty))
+		return srv.(ServiceServer).Send(ctx, req.(*types.Event))
 	}
 	return interceptor(ctx, in, info, handler)
 }
+
+func _Service_Stream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ServiceServer).Stream(&grpc.GenericServerStream[types.Event, emptypb.Empty]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Service_StreamServer = grpc.ClientStreamingServer[types.Event, emptypb.Empty]
 
 // Service_ServiceDesc is the grpc.ServiceDesc for Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Service_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "databus.Service",
+	ServiceName: "jenny.Service",
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Publish",
-			Handler:    _Service_Publish_Handler,
+			MethodName: "Send",
+			Handler:    _Service_Send_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Stream",
+			Handler:       _Service_Stream_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "api/jenny/server.proto",
 }

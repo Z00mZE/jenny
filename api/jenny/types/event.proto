@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/Z00mZE/jenny/pb/jenny/types";
+
+import "api/jenny/types/entity.proto";
+
+message Event{
+  message Insert{
+    types.Entity data = 1;
+  }
+
+  message Update{
+    string id = 1;
+  }
+
+  message Delete{
+    string id = 1;
+  }
+
+  oneof event{
+    Insert insert = 1;
+    Update update = 2;
+    Delete delete = 3;
+  }
+}
+

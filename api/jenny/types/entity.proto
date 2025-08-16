@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/Z00mZE/jenny/pb/jenny/types";
+
+// Entity (Сущность)
+message Entity{
+  // Attribute (Атрибут)
+  message Attribute {
+    // Value (Значение)
+    message Value {
+      string id = 1;                 // Уникальный идентификатор значения
+      string label = 2;             // заголовок значения
+      string description = 3;       // описание значения
+      oneof value {
+        string string_value = 4;     // Строковое значение
+        int32 int_value = 5;         // Целочисленное значение
+        float float_value = 6;       // Значение с плавающей точкой
+        bool bool_value = 7;         // Булево значение
+        int64 datetime_value = 8;    // Дата/время (timestamp)
+        bytes binary_value = 9;      // Бинарные данные
+      }
+    }
+
+    string id = 1;              // Униальный идентификатор атрибута
+    string label = 2;           // Наименование атрибута
+    string description = 3;     // Описание атрибута
+    repeated Value values = 4;  // значения
+  }
+
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  repeated Attribute attributes = 4;
+}

@@ -12,6 +12,8 @@ template: testify
 template-schema: '{{.Template}}.schema.json'
 template-data:
   unroll-variadic: True
+exclude-subpkg-regex:
+  - "github.com/Z00mZE/jenny/pb"
 packages:
   github.com/Z00mZE/jenny:
     config:
