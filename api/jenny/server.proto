@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package jenny;
 
-option go_package = "github.com/Z00mZE/jenny/pb/jenny";
+option go_package = "github.com/Z00mZE/jenny/pb/service";
 
 import "google/protobuf/empty.proto";
 import "api/jenny/types/event.proto";
 
-service Service{
+service Application{
   rpc Send(types.Event) returns(google.protobuf.Empty);
   rpc Stream(stream types.Event) returns (google.protobuf.Empty);
 }

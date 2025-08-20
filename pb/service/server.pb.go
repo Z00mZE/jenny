@@ -4,10 +4,10 @@
 // 	protoc        (unknown)
 // source: api/jenny/server.proto
 
-package jenny
+package service
 
 import (
-	types "github.com/Z00mZE/jenny/pb/jenny/types"
+	types "github.com/Z00mZE/jenny/pb/service/types"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -26,20 +26,20 @@ var File_api_jenny_server_proto protoreflect.FileDescriptor
 
 const file_api_jenny_server_proto_rawDesc = "" +
 	"\n" +
-	"\x16api/jenny/server.proto\x12\x05jenny\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bapi/jenny/types/event.proto2i\n" +
-	"\aService\x12,\n" +
+	"\x16api/jenny/server.proto\x12\x05jenny\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bapi/jenny/types/event.proto2m\n" +
+	"\vApplication\x12,\n" +
 	"\x04Send\x12\f.types.Event\x1a\x16.google.protobuf.Empty\x120\n" +
-	"\x06Stream\x12\f.types.Event\x1a\x16.google.protobuf.Empty(\x01B\"Z github.com/Z00mZE/jenny/pb/jennyb\x06proto3"
+	"\x06Stream\x12\f.types.Event\x1a\x16.google.protobuf.Empty(\x01B$Z\"github.com/Z00mZE/jenny/pb/serviceb\x06proto3"
 
 var file_api_jenny_server_proto_goTypes = []any{
 	(*types.Event)(nil),   // 0: types.Event
 	(*emptypb.Empty)(nil), // 1: google.protobuf.Empty
 }
 var file_api_jenny_server_proto_depIdxs = []int32{
-	0, // 0: jenny.Service.Send:input_type -> types.Event
-	0, // 1: jenny.Service.Stream:input_type -> types.Event
-	1, // 2: jenny.Service.Send:output_type -> google.protobuf.Empty
-	1, // 3: jenny.Service.Stream:output_type -> google.protobuf.Empty
+	0, // 0: jenny.Application.Send:input_type -> types.Event
+	0, // 1: jenny.Application.Stream:input_type -> types.Event
+	1, // 2: jenny.Application.Send:output_type -> google.protobuf.Empty
+	1, // 3: jenny.Application.Stream:output_type -> google.protobuf.Empty
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

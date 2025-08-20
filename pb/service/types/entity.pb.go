@@ -359,7 +359,7 @@ const file_api_jenny_types_entity_proto_rawDesc = "" +
 	"bool_value\x18\a \x01(\bH\x00R\tboolValue\x12'\n" +
 	"\x0edatetime_value\x18\b \x01(\x03H\x00R\rdatetimeValue\x12#\n" +
 	"\fbinary_value\x18\t \x01(\fH\x00R\vbinaryValueB\a\n" +
-	"\x05valueB(Z&github.com/Z00mZE/jenny/pb/jenny/typesb\x06proto3"
+	"\x05valueB*Z(github.com/Z00mZE/jenny/pb/service/typesb\x06proto3"
 
 var (
 	file_api_jenny_types_entity_proto_rawDescOnce sync.Once

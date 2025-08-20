@@ -266,7 +266,7 @@ const file_api_jenny_types_event_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\x18\n" +
 	"\x06Delete\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02idB\a\n" +
-	"\x05eventB(Z&github.com/Z00mZE/jenny/pb/jenny/typesb\x06proto3"
+	"\x05eventB*Z(github.com/Z00mZE/jenny/pb/service/typesb\x06proto3"
 
 var (
 	file_api_jenny_types_event_proto_rawDescOnce sync.Once
